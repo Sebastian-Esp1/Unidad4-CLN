@@ -1,0 +1,12 @@
+digraph Estados {
+  rankdir=LR; bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Arial", fontsize=12, fillcolor="#DCE6F2", color="#1F3864", margin="0.2,0.12"];
+  edge [fontname="Arial", fontsize=10, color="#1F3864"];
+  DRAFT [fillcolor="#FFF2CC"];
+  DELIVERED [fillcolor="#E2F0D9"]; CANCELLED [fillcolor="#F8D7DA"]; RETURNED [fillcolor="#F8D7DA"];
+  DRAFT -> CONFIRMED [label="confirm()\nevento: OrderConfirmed"];
+  CONFIRMED -> SHIPPED [label="ship(guía)\nevento: OrderShipped"];
+  SHIPPED -> DELIVERED [label="deliver()\nevento: OrderDelivered"];
+  CONFIRMED -> CANCELLED [label="cancel(motivo)\nevento: OrderCancelled"];
+  SHIPPED -> RETURNED [label="return_order()\nevento: OrderReturned"];
+}
