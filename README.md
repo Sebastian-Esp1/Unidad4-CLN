@@ -1,117 +1,78 @@
-# TechStore U4 – Núcleo de negocio con API REST
+# TechStore — Unidad 4: núcleo de negocio
 
-**Universidad Autónoma de Nuevo León – FIME**
-**Materia:** Componentes de lógica de negocios · **Unidad 4:** Desarrollo de componentes de negocio
-**Docente:** Miguel Ángel Gómez Marroquín · **Equipo:** 3
+Proyecto educativo en Python 3.11+ para demostrar entidades y Value Objects, Specification Pattern, máquina de estados, Domain Events, API REST y pruebas automáticas.
 
-| Nombre | Matrícula | Carrera |
-|---|---|---|
-| Jaime Sebastian Esparza Leyva | 2097304 | ITS |
-| Alan Joel Sánchez García | 2082464 | ITS |
-| Jorge Alejandro Jiménez González | 2097849 | ITS |
+## Contenido
+- `app/domain.py`: Money, Customer, OrderItem, Order, estados, eventos y reglas.
+- `app/specifications.py`: especificaciones componibles con AND (`&`), OR (`|`) y NOT (`~`).
+- `app/api.py`: API FastAPI y documentación OpenAPI/Swagger.
+- `cargar_csv.py`: carga de datos desde CSV.
+- `datos/`: archivos CSV de ejemplo compatibles con la guía. Si el profesor entregó los CSV originales, conserva los originales y reemplaza estos archivos por aquellos.
+- `tests/`: pruebas unitarias y de API.
+- `docs/`: bitácora de escenarios, diagrama de estados y guía de evidencias.
 
-## 1. Qué es
-
-Programa para administrar pedidos de una tienda ficticia (TechStore). Lee clientes, productos y pedidos de archivos CSV, los convierte en objetos del dominio, aplica reglas de descuento con Specifications, controla el estado de cada pedido con una máquina de estados y expone las operaciones mediante una API REST (FastAPI). Los datos viven en memoria: al cerrar el programa, los cambios se pierden.
-
-## 2. Estructura del repositorio
-
-| Ruta | Contenido |
-|---|---|
-| `app/domain.py` | Money, Customer, OrderItem, Order (Aggregate Root), OrderStatus, DomainEvent y excepciones de dominio |
-| `app/specifications.py` | Specification Pattern con composición AND / OR / NOT y reglas de descuento |
-| `app/services.py` | Application Service (`OrderService`): coordina, no contiene reglas |
-| `app/api.py` | API REST con FastAPI y traducción de excepciones a códigos HTTP |
-| `tests/` | Pruebas pytest del dominio, las Specifications, el servicio y la API |
-| `datos/` | CSV del paquete: clientes, productos, pedidos, detalle de pedidos y escenarios |
-| `cargar_csv.py` | Cargador de datos (viene en el paquete del alumno) |
-| `docs/` | Bitácora E01–E15, diagrama de estados, capturas y reflexión |
-
-## 3. Instalación
-
-Requiere Python 3.11 o superior.
-
-```bash
+## Instalar en Windows
+```powershell
+python --version
 python -m venv .venv
-# Windows PowerShell:  .venv\Scripts\Activate.ps1
-# Windows CMD:         .venv\Scripts\activate.bat
-# macOS / Linux:       source .venv/bin/activate
+.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
+Si PowerShell bloquea la activación, abre CMD y usa `.venv\Scripts\activate.bat`, o instala con el ejecutable de Python disponible.
 
-## 4. Ejecución
-
-| Qué | Comando |
-|---|---|
-| Cargar los 16 pedidos y ver su estado | `python cargar_csv.py` |
-| Correr las pruebas | `python -m pytest -q` |
-| Levantar la API | `uvicorn app.api:app --reload` |
-| Documentación interactiva (Swagger) | http://127.0.0.1:8000/docs |
-| Contrato OpenAPI | http://127.0.0.1:8000/openapi.json |
-
-Ejecuta todos los comandos desde la raíz del proyecto (donde están `app/` y `cargar_csv.py`).
-
-## 5. Reglas de negocio
-
-| Regla | Detalle |
-|---|---|
-| Dinero | `Money` es inmutable, usa `Decimal` (no `float`) y no admite importes negativos |
-| Límite de unidades | Máximo 20 unidades por pedido; es la **suma de cantidades**, no el número de renglones |
-| Artículo válido | SKU no vacío y cantidad mayor que 0 |
-| Descuento del 10 % | Cliente VIP, total > 500 MXN, al menos 4 unidades y sin promoción activa |
-| Descuento del 5 % | Total > 5000 MXN y sin promoción activa |
-| Prioridad | Si se cumplen ambos descuentos se aplica el 10 % |
-| Confirmar | Solo desde DRAFT, con artículos y cliente activo |
-| Enviar | Solo desde CONFIRMED y con número de guía no vacío |
-| Cancelar | Solo desde CONFIRMED y con motivo no vacío |
-| Entregar / devolver | Solo desde SHIPPED |
-| Operación inválida | No cambia el estado y no registra ningún evento |
-| Inventario | El campo `existencia` es solo información de catálogo; no se descuenta stock |
-
-## 6. Máquina de estados y Domain Events
-
+## Ejecutar la carga CSV
+Desde la carpeta raíz:
+```bash
+python cargar_csv.py
 ```
-DRAFT --confirm--> CONFIRMED --ship--> SHIPPED --deliver--> DELIVERED
-                       |                  |
-                    cancel              return
-                       |                  |
-                   CANCELLED           RETURNED
+Debe listar 16 pedidos en estado `DRAFT`. En los datos incluidos, `O001` debe mostrar 4 unidades y un total de `2100.00 MXN`, y `O010` un total de `500.00 MXN`.
+
+## Ejecutar las pruebas
+```bash
+python -m pytest -q
 ```
 
-| Operación | Evento publicado |
-|---|---|
-| `confirm()` | `OrderConfirmed` |
-| `ship(tracking_number)` | `OrderShipped` |
-| `cancel(reason)` | `OrderCancelled` |
-| `deliver()` | `OrderDelivered` |
-| `return_order()` | `OrderReturned` |
+## Ejecutar API y abrir Swagger
+```bash
+uvicorn app.api:app --reload
+```
+Abre `http://127.0.0.1:8000/docs`. También está disponible `http://127.0.0.1:8000/openapi.json`.
 
-## 7. Endpoints
+Endpoints principales:
+- `GET /orders`
+- `GET /orders/{order_id}`
+- `POST /orders`
+- `POST /orders/{order_id}/items`
+- `POST /orders/{order_id}/confirm`
+- `POST /orders/{order_id}/ship`
+- `POST /orders/{order_id}/cancel`
+- `POST /orders/{order_id}/deliver`
+- `POST /orders/{order_id}/return`
 
-| Método | Ruta | Descripción | Respuestas |
-|---|---|---|---|
-| GET | `/orders` | Lista los pedidos | 200 |
-| GET | `/orders/{id}` | Consulta un pedido | 200, 404 |
-| POST | `/orders/{id}/confirm` | DRAFT → CONFIRMED | 200, 404, 409, 422 |
-| POST | `/orders/{id}/ship` | CONFIRMED → SHIPPED. Cuerpo: `{"tracking_number": "..."}` | 200, 404, 409, 422 |
-| POST | `/orders/{id}/cancel` | CONFIRMED → CANCELLED. Cuerpo: `{"reason": "..."}` | 200, 404, 409, 422 |
-| POST | `/orders/{id}/deliver` | SHIPPED → DELIVERED | 200, 404, 409 |
-| POST | `/orders/{id}/return` | SHIPPED → RETURNED | 200, 404, 409 |
-| POST | `/fixtures/reload` | Restaura los 16 pedidos a DRAFT (uso didáctico) | 200 |
+Respuestas previstas:
+- `404`: pedido inexistente.
+- `409`: transición inválida o identificador duplicado.
+- `422`: datos inválidos o regla del dominio incumplida.
 
-| Código | Cuándo |
-|---|---|
-| 404 | El pedido no existe |
-| 409 | El estado actual no permite la operación (por ejemplo, confirmar dos veces o cancelar desde SHIPPED) |
-| 422 | Datos o precondiciones inválidos (pedido vacío, cliente inactivo, guía o motivo vacío, más de 20 unidades) |
+## Reglas de negocio implementadas
+1. `Money` es inmutable, usa `Decimal` y no admite cantidades negativas ni monedas distintas de MXN.
+2. Cada artículo necesita SKU y cantidad entera positiva.
+3. El máximo es 20 unidades sumadas en todo el pedido; no se cuentan renglones.
+4. Solo pedidos `DRAFT` aceptan artículos.
+5. Solo se confirma un pedido con artículos y cliente activo.
+6. Enviar requiere estado `CONFIRMED` y guía no vacía.
+7. Cancelar requiere estado `CONFIRMED` y motivo no vacío.
+8. Entregar y devolver requieren estado `SHIPPED`.
+9. Los eventos se registran únicamente después de una transición válida.
+10. Descuento del 10 %: total estrictamente mayor a 500 MXN, cliente VIP, al menos 4 unidades y sin promoción activa.
+11. Descuento del 5 %: total estrictamente mayor a 5000 MXN y sin promoción activa. Si aplican ambos, tiene prioridad el 10 %.
 
-## 8. Evidencias
+## Datos
+Los CSV de esta carpeta son datos de ejemplo creados para que el proyecto sea ejecutable por sí mismo y cumpla las cantidades de registros descritas en la guía. Si el profesor o el repositorio del equipo ya contiene los CSV originales, usa esos originales para conservar los casos E01–E15 exactamente como fueron entregados.
 
-| Evidencia | Ubicación |
-|---|---|
-| Carga exitosa de los 16 pedidos | `docs/` |
-| Bitácora de los escenarios E01–E15 | `docs/` |
-| Resultados de pytest | `docs/` |
-| Swagger: una operación exitosa y una rechazada | `docs/` |
-| Diagrama de estados y explicación de los Domain Events | `docs/` |
-| Reflexión del equipo | `docs/` |
+## Evidencias pendientes de generar localmente
+La carpeta `docs` contiene una bitácora inicial y el diagrama de estados. Para la entrega, ejecuta el proyecto en tu computadora y agrega capturas reales de:
+- `python cargar_csv.py` con los 16 pedidos.
+- `python -m pytest -q` sin fallos.
+- Swagger `/docs` con una petición exitosa y otra rechazada.
+No se incluyen capturas simuladas ni se afirma que se hayan ejecutado en el equipo del estudiante.

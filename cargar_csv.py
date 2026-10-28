@@ -1,38 +1,61 @@
-"""Carga fixtures TechStore desde CSV en objetos del dominio de U4.
-Ejecutar desde la carpeta que contiene 'datos' y este archivo.
-"""
+"""Carga clientes, catálogo, pedidos y detalles desde ./datos."""
 import csv
-from pathlib import Path
 from decimal import Decimal
-from app.domain import Customer, Order, OrderItem, Money
+from pathlib import Path
+from app.domain import Customer, Money, Order, OrderItem
 
-BASE = Path(__file__).resolve().parent / "datos"
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "datos"
 
-def rows(filename):
-    with (BASE / filename).open(encoding="utf-8-sig", newline="") as f:
-        return list(csv.DictReader(f))
+
+def _read_csv(filename):
+    path = DATA_DIR / filename
+    if not path.exists():
+        raise FileNotFoundError(f"No se encontró {path}.")
+    with path.open("r", encoding="utf-8-sig", newline="") as stream:
+        return list(csv.DictReader(stream))
+
+
+def _truth(value):
+    return str(value).strip().lower() in {"1", "true", "sí", "si", "yes", "y"}
+
 
 def load_fixture():
-    clients = {
-        x["cliente_id"]: Customer(
-            x["cliente_id"], bool(int(x["es_vip"])), bool(int(x["activo"]))
-        ) for x in rows("clientes.csv")
-    }
-    prices = {x["sku"]: Decimal(x["precio_mxn"]) for x in rows("productos.csv")}
-    orders = {
-        x["pedido_id"]: Order(
-            customer=clients[x["cliente_id"]],
-            id=x["pedido_id"],
-            has_promotion=bool(int(x["tiene_promocion"]))
-        ) for x in rows("pedidos.csv")
-    }
-    for x in rows("detalle_pedidos.csv"):
-        orders[x["pedido_id"]].add_item(
-            OrderItem(x["sku"], int(x["cantidad"]), Money(prices[x["sku"]]))
+    customers = {}
+    for row in _read_csv("clientes.csv"):
+        customer_id = row.get("cliente_id") or row.get("id") or row.get("customer_id")
+        customers[customer_id] = Customer(
+            id=customer_id,
+            is_vip=_truth(row.get("es_vip", row.get("is_vip", "0"))),
+            active=_truth(row.get("activo", row.get("active", "1"))),
         )
+
+    products = {}
+    for row in _read_csv("productos.csv"):
+        sku = row.get("sku") or row.get("producto_id")
+        price = row.get("precio_mxn", row.get("price", "0"))
+        products[sku] = Money(Decimal(str(price)))
+
+    orders = {}
+    for row in _read_csv("pedidos.csv"):
+        order_id = row.get("pedido_id") or row.get("id")
+        customer_id = row.get("cliente_id") or row.get("customer_id")
+        promotion = _truth(row.get("promocion_activa", row.get("has_promotion", "0")))
+        orders[order_id] = Order(customer=customers[customer_id], id=order_id, has_promotion=promotion)
+
+    for row in _read_csv("detalle_pedidos.csv"):
+        order_id = row.get("pedido_id")
+        sku = row.get("sku")
+        quantity = int(row.get("cantidad", "0"))
+        orders[order_id].add_item(OrderItem(sku, quantity, products[sku]))
+
     return orders
+
 
 if __name__ == "__main__":
     orders = load_fixture()
-    for order_id, order in orders.items():
-        print(order_id, order.status.value, order.units, order.total.amount)
+    for order in orders.values():
+        print(
+            f"{order.id} | {order.status.value} | unidades={order.units} | "
+            f"total=${order.total.amount:.2f} MXN | descuento={order.discount_rate:.0%}"
+        )
