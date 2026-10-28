@@ -67,9 +67,6 @@ Respuestas previstas:
 10. Descuento del 10 %: total estrictamente mayor a 500 MXN, cliente VIP, al menos 4 unidades y sin promoción activa.
 11. Descuento del 5 %: total estrictamente mayor a 5000 MXN y sin promoción activa. Si aplican ambos, tiene prioridad el 10 %.
 
-## Datos
-Los CSV de esta carpeta son datos de ejemplo creados para que el proyecto sea ejecutable por sí mismo y cumpla las cantidades de registros descritas en la guía. Si el profesor o el repositorio del equipo ya contiene los CSV originales, usa esos originales para conservar los casos E01–E15 exactamente como fueron entregados.
-
 ## Evidencias pendientes de generar localmente
 La carpeta `docs` contiene una bitácora inicial y el diagrama de estados. Para la entrega, ejecuta el proyecto en tu computadora y agrega capturas reales de:
 - `python cargar_csv.py` con los 16 pedidos.
