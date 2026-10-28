@@ -99,4 +99,4 @@ if __name__ == "__main__":
     else:
         for f in filas:
             print(f"{f['caso']} {f['pedido']} | {f['estado_inicial']} -> {f['estado_final']} | "
-                    f"{f['operacion']} | {f['resultado']} | eventos: {f['eventos']}")
+                  f"{f['operacion']} | {f['resultado']} | eventos: {f['eventos']}")
