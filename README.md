@@ -27,7 +27,7 @@ Programa para administrar pedidos de una tienda ficticia (TechStore). Lee client
 | `cargar_csv.py` | Cargador de datos original del docente: lee `datos/` y construye los objetos del dominio (`load_fixture()`) |
 | `ejecutar_escenarios.py` | Ejecuta los escenarios E01–E15 de `datos/escenarios.csv` sobre el dominio y muestra el resultado de cada uno |
 | `requirements.txt` | Dependencias: FastAPI, uvicorn, pytest y httpx |
-| `docs/` | Informe de la Unidad 4, bitácora de escenarios, diagrama de estados (fuente `.dot` e imagen), conclusiones y capturas |
+| `docs/` | Documentación de la Unidad 4 (con las capturas y la reflexión), bitácora de escenarios y diagrama de estados (fuente `.dot` e imagen) |
 
 ## 3. Instalación
 
@@ -47,7 +47,7 @@ python -m pip install -r requirements.txt
 |---|---|
 | Cargar los 16 pedidos y ver su estado | `python cargar_csv.py` |
 | Ejecutar los escenarios E01–E15 | `python ejecutar_escenarios.py` |
-| Correr las pruebas | `python -m pytest -q` |
+| Correr las pruebas | `python -m pytest -v` (73 pruebas) |
 | Levantar la API | `uvicorn app.api:app --reload` |
 | Documentación interactiva (Swagger) | http://127.0.0.1:8000/docs |
 | Contrato OpenAPI | http://127.0.0.1:8000/openapi.json |
@@ -120,8 +120,8 @@ Los eventos se **registran** en la lista `order.events` del pedido después de u
 |---|---|---|
 | Diagrama de estados y explicación de los Domain Events | `docs/diagrama_estados.png`, `docs/diagrama_estados.dot` y `docs/Estados_Eventos_Bitacora_U4.docx` | Incluido |
 | Bitácora de los escenarios E01–E15 | `docs/Estados_Eventos_Bitacora_U4.docx` | Incluida |
-| Informe de la Unidad 4 | `docs/Informe_Unidad4_TechStore.docx` | Incluido |
-| Captura de `python cargar_csv.py` con los 16 pedidos | `docs/` | Pendiente de agregar |
-| Captura de `python -m pytest -q` | `docs/` | Pendiente de agregar |
-| Capturas de Swagger: una operación exitosa y una rechazada | `docs/` | Pendiente de agregar |
-| Reflexión del equipo | `docs/` | Pendiente de agregar |
+| Documentación de la Unidad 4 | `docs/Documentacion_U4_Equipo3.docx` | Incluida |
+| Captura de `python cargar_csv.py` con los 16 pedidos | Sección 7 de `docs/Documentacion_U4_Equipo3.docx` | Incluida |
+| Captura de `python -m pytest -v` (73 passed) | Sección 7 de `docs/Documentacion_U4_Equipo3.docx` | Incluida |
+| Capturas de Swagger: `POST /orders/O001/confirm` (200) y `POST /orders/X909/confirm` (404) | Sección 7 de `docs/Documentacion_U4_Equipo3.docx` | Incluidas |
+| Reflexión del equipo: tres errores, solución y aprendizaje | Sección 10 de `docs/Documentacion_U4_Equipo3.docx` | Incluida |
