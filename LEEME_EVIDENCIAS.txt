@@ -1,0 +1,14 @@
+EVIDENCIAS GENERADAS — TechStore Unidad 4
+
+1. captura_terminal_cargar_csv.png: captura incluida con el ZIP original para la carga CSV.
+2. captura_pruebas_pytest.png: salida de ejecutar python -m pytest -q en este entorno; resultado: 28 passed.
+3. captura_api_exitosa_O001.png: respuesta real HTTP 200 de GET /orders/O001 en la API local.
+4. captura_api_error_404.png: respuesta real HTTP 404 de GET /orders/NO_EXISTE en la API local.
+
+Nota importante: las capturas de API muestran respuestas reales obtenidas al ejecutar el proyecto localmente en este entorno; no son capturas de la interfaz gráfica de Swagger. Para tomar la evidencia gráfica de Swagger en tu computadora:
+- Abre una terminal en la carpeta raíz del proyecto y ejecuta: python -m uvicorn app.api:app --reload
+- Abre http://127.0.0.1:8000/docs
+- Expande GET /orders/{order_id}, pulsa Try it out, escribe O001 y pulsa Execute. Captura la respuesta 200.
+- Repite con NO_EXISTE para obtener 404 y captura esa respuesta.
+
+Las pruebas se volvieron a ejecutar para generar la evidencia: 28 passed.

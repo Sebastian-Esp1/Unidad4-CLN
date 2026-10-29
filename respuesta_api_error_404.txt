@@ -1,0 +1,8 @@
+> curl -i http://127.0.0.1:8765/orders/NO_EXISTE
+HTTP/1.1 404 Not Found
+date: Thu, 29 Oct 2026 03:53:20 GMT
+server: uvicorn
+content-length: 43
+content-type: application/json
+
+{"detail":"No existe el pedido NO_EXISTE."}

@@ -1,0 +1,16 @@
+O001 | DRAFT | unidades=4 | total=$2100.00 MXN | descuento=10%
+O002 | DRAFT | unidades=3 | total=$400.00 MXN | descuento=0%
+O003 | DRAFT | unidades=3 | total=$150.00 MXN | descuento=0%
+O004 | DRAFT | unidades=1 | total=$750.00 MXN | descuento=0%
+O005 | DRAFT | unidades=2 | total=$9000.00 MXN | descuento=0%
+O006 | DRAFT | unidades=3 | total=$6450.00 MXN | descuento=5%
+O007 | DRAFT | unidades=2 | total=$200.00 MXN | descuento=0%
+O008 | DRAFT | unidades=2 | total=$1800.00 MXN | descuento=0%
+O009 | DRAFT | unidades=1 | total=$850.00 MXN | descuento=0%
+O010 | DRAFT | unidades=1 | total=$500.00 MXN | descuento=0%
+O011 | DRAFT | unidades=2 | total=$500.00 MXN | descuento=0%
+O012 | DRAFT | unidades=1 | total=$150.00 MXN | descuento=0%
+O013 | DRAFT | unidades=1 | total=$600.00 MXN | descuento=0%
+O014 | DRAFT | unidades=1 | total=$300.00 MXN | descuento=0%
+O015 | DRAFT | unidades=1 | total=$1200.00 MXN | descuento=0%
+O016 | DRAFT | unidades=4 | total=$200.00 MXN | descuento=0%

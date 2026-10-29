@@ -1,0 +1,8 @@
+> curl -i http://127.0.0.1:8765/orders/O001
+HTTP/1.1 200 OK
+date: Thu, 29 Oct 2026 03:53:20 GMT
+server: uvicorn
+content-length: 451
+content-type: application/json
+
+{"id":"O001","customer_id":"C001","status":"DRAFT","units":4,"total_mxn":"2100.00","discount_rate":"0.10","discount_mxn":"210.00","total_after_discount_mxn":"1890.00","has_promotion":false,"items":[{"sku":"SKU001","quantity":1,"unit_price_mxn":"600.00","subtotal_mxn":"600.00"},{"sku":"SKU003","quantity":1,"unit_price_mxn":"900.00","subtotal_mxn":"900.00"},{"sku":"SKU004","quantity":2,"unit_price_mxn":"300.00","subtotal_mxn":"600.00"}],"events":[]}
